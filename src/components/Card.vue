@@ -2,7 +2,6 @@
 import { ref, defineProps } from "vue";
 
 const props = defineProps<{
-  title: string;
   actions: {
     text: string;
     color?: string;
@@ -10,13 +9,14 @@ const props = defineProps<{
   }[];
 }>();
 
-const title = ref(props.title);
 const actions = ref(props.actions);
 </script>
 
 <template>
   <v-card>
-    <v-card-title v-if="title">{{ title }}</v-card-title>
+    <v-card-title>
+      <slot name="title"></slot>
+    </v-card-title>
     <v-card-text>
       <slot name="content"></slot>
     </v-card-text>
