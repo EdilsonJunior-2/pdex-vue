@@ -11,6 +11,8 @@ const offset = ref<number>(0);
 const limit = ref<number>(20);
 const total = ref<number>(0);
 const page = ref<number>(1);
+const nameFilter = ref<string>("");
+const numberFilter = ref<string>("");
 
 const catchEmAll = () =>
   pokemonList(0, 10000).then((res: any) => {
@@ -24,6 +26,10 @@ watch(page, (curr, _) => {
   offset.value = limit.value * (curr - 1);
 });
 
+watch(numberFilter, (curr, _) => {
+  numberFilter.value = curr.replace(/\D+/g, "");
+});
+
 onBeforeMount(() => {
   catchEmAll();
 });
@@ -31,21 +37,31 @@ onBeforeMount(() => {
 
 <template>
   <main class="home-view">
-    <v-select
-      label="Limit"
-      variant="outlined"
-      v-model="limit"
-      :items="[10, 20, 50]"
-    />
+    <div class="filters">
+      <v-text-field v-model="nameFilter" label="Name filter" />
+      <v-text-field v-model="numberFilter" label="Index filter" />
+      <v-select
+        label="Limit"
+        variant="outlined"
+        v-model="limit"
+        :items="[10, 20, 50]"
+      />
+    </div>
     <v-sheet
       class="d-flex flex-wrap justify-center overflow-scroll"
-      height="70vh"
+      height="80vh"
     >
       <v-sheet
         class="pa-2"
         width="auto"
         min-width="20rem"
-        v-for="pokemon in pokemons.slice(offset, limit + offset)"
+        v-for="pokemon in pokemons
+          .filter(
+            (poke) =>
+              poke.name.toLowerCase().includes(nameFilter.toLowerCase()) &&
+              poke.number.toString().includes(numberFilter)
+          )
+          .slice(offset, limit + offset)"
       >
         <Card
           :actions="[
@@ -77,5 +93,9 @@ onBeforeMount(() => {
 .home-view {
   width: 90%;
   margin: 1rem auto;
+
+  .filters {
+    display: flex;
+  }
 }
 </style>
