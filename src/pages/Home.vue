@@ -22,6 +22,13 @@ const catchEmAll = () =>
     );
   });
 
+const filteredPokemonList = (): PokemonListItem[] =>
+  pokemons.value.filter(
+    (poke) =>
+      poke.name.toLowerCase().includes(nameFilter.value.toLowerCase()) &&
+      poke.number.toString().includes(numberFilter.value)
+  );
+
 watch(page, (curr, _) => {
   offset.value = limit.value * (curr - 1);
 });
@@ -55,13 +62,7 @@ onBeforeMount(() => {
         class="pa-2"
         width="auto"
         min-width="20rem"
-        v-for="pokemon in pokemons
-          .filter(
-            (poke) =>
-              poke.name.toLowerCase().includes(nameFilter.toLowerCase()) &&
-              poke.number.toString().includes(numberFilter)
-          )
-          .slice(offset, limit + offset)"
+        v-for="pokemon in filteredPokemonList().slice(offset, limit + offset)"
       >
         <Card
           :actions="[
@@ -84,7 +85,7 @@ onBeforeMount(() => {
     </v-sheet>
     <v-pagination
       v-model="page"
-      :length="Math.ceil(total / limit)"
+      :length="Math.ceil(filteredPokemonList().length / limit)"
     ></v-pagination>
   </main>
 </template>
