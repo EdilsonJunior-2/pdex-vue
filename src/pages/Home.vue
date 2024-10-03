@@ -4,6 +4,7 @@ import { ref, watch, onBeforeMount, capitalize } from "vue";
 import Card from "@/components/Card.vue";
 import ListItem from "@/commons/classes/lists/listItem";
 import PokemonListItem from "@/commons/classes/lists/pokemonListItem";
+import { sprite } from "@/commons/utils/URLs";
 
 const pokemons = ref<PokemonListItem[]>([]);
 const offset = ref<number>(0);
@@ -47,7 +48,6 @@ onBeforeMount(() => {
         v-for="pokemon in pokemons.slice(offset, limit + offset)"
       >
         <Card
-          :title="`#${pokemon.number} ${pokemon.name}`"
           :actions="[
             {
               text: 'details',
@@ -60,10 +60,7 @@ onBeforeMount(() => {
           </template>
           <template v-slot:content>
             <v-sheet class="d-flex align-center justify-center">
-              <img
-                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.number}.png`"
-                :alt="pokemon.name"
-              />
+              <img :src="sprite(pokemon.number)" :alt="pokemon.name" />
             </v-sheet>
           </template>
         </Card>
