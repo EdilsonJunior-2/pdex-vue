@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { pokemonList } from "@/api/pokemon";
-import { ref, watch, onBeforeMount } from "vue";
+import { ref, watch, onBeforeMount, capitalize } from "vue";
 import Card from "@/components/Card.vue";
 import ListItem from "@/commons/classes/lists/listItem";
 import PokemonListItem from "@/commons/classes/lists/pokemonListItem";
@@ -12,7 +12,7 @@ const total = ref<number>(0);
 const page = ref<number>(1);
 
 const catchEmAll = () =>
-  pokemonList(offset.value, limit.value).then((res: any) => {
+  pokemonList(0, 10000).then((res: any) => {
     total.value = res.count;
     pokemons.value = res.results.map(
       (poke: ListItem) => new PokemonListItem(poke)
@@ -21,7 +21,6 @@ const catchEmAll = () =>
 
 watch(page, (curr, _) => {
   offset.value = limit.value * (curr - 1);
-  catchEmAll();
 });
 
 onBeforeMount(() => {
@@ -30,40 +29,56 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <main>
-    <v-container>
-      <v-pagination v-model="page" :length="total / limit"></v-pagination>
-      <v-sheet class="d-flex flex-wrap justify-center">
-        <v-sheet
-          class="pa-2"
-          width="auto"
-          min-width="15rem"
-          v-for="(pokemon, index) in pokemons"
+  <main class="home-view">
+    <v-select
+      label="Limit"
+      variant="outlined"
+      v-model="limit"
+      :items="[10, 20, 50]"
+    />
+    <v-sheet
+      class="d-flex flex-wrap justify-center overflow-scroll"
+      height="70vh"
+    >
+      <v-sheet
+        class="pa-2"
+        width="auto"
+        min-width="20rem"
+        v-for="pokemon in pokemons.slice(offset, limit + offset)"
+      >
+        <Card
+          :title="`#${pokemon.number} ${pokemon.name}`"
+          :actions="[
+            {
+              text: 'details',
+              function: () => false,
+            },
+          ]"
         >
-          <Card
-            :title="`#${pokemon.number} ${pokemon.name}`"
-            :actions="[
-              {
-                text: 'details',
-                function: () => false,
-              },
-            ]"
-          >
-            <template v-slot:content>
-              <v-sheet class="d-flex align-center justify-center">
-                <img
-                  :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
-                    offset + index + 1
-                  }.png`"
-                  :alt="(pokemon as any).name"
-                />
-              </v-sheet>
-            </template>
-          </Card>
-        </v-sheet>
+          <template v-slot:title>
+            {{ capitalize(pokemon.name) }} (#{{ pokemon.number }})
+          </template>
+          <template v-slot:content>
+            <v-sheet class="d-flex align-center justify-center">
+              <img
+                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.number}.png`"
+                :alt="pokemon.name"
+              />
+            </v-sheet>
+          </template>
+        </Card>
       </v-sheet>
-    </v-container>
+    </v-sheet>
+    <v-pagination
+      v-model="page"
+      :length="Math.ceil(total / limit)"
+    ></v-pagination>
   </main>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.home-view {
+  width: 90%;
+  margin: 1rem auto;
+}
+</style>
