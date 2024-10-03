@@ -33,10 +33,15 @@ onBeforeMount(() => {
   <main>
     <v-container>
       <v-pagination v-model="page" :length="total / limit"></v-pagination>
-      <v-row justify="space-between">
-        <v-col cols="4" v-for="(pokemon, index) in pokemons">
+      <v-sheet class="d-flex flex-wrap justify-center">
+        <v-sheet
+          class="pa-2"
+          width="auto"
+          min-width="15rem"
+          v-for="(pokemon, index) in pokemons"
+        >
           <Card
-            :title="`${pokemon.name} #${pokemon.number}`"
+            :title="`#${pokemon.number} ${pokemon.name}`"
             :actions="[
               {
                 text: 'details',
@@ -45,16 +50,18 @@ onBeforeMount(() => {
             ]"
           >
             <template v-slot:content>
-              <img
-                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
-                  offset + index + 1
-                }.png`"
-                :alt="(pokemon as any).name"
-              />
+              <v-sheet class="d-flex align-center justify-center">
+                <img
+                  :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+                    offset + index + 1
+                  }.png`"
+                  :alt="(pokemon as any).name"
+                />
+              </v-sheet>
             </template>
           </Card>
-        </v-col>
-      </v-row>
+        </v-sheet>
+      </v-sheet>
     </v-container>
   </main>
 </template>

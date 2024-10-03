@@ -20,8 +20,13 @@ const actions = ref(props.actions);
     <v-card-text>
       <slot name="content"></slot>
     </v-card-text>
-    <v-card-actions v-if="actions" v-for="action in actions">
-      <v-btn variant="tonal" :color="action.color" @click="action.function">
+    <v-card-actions v-if="actions" v-for="action in actions" class="d-flex">
+      <v-btn
+        variant="tonal"
+        :color="action.color"
+        @click="action.function"
+        width="100%"
+      >
         {{ action.text }}
       </v-btn>
     </v-card-actions>
