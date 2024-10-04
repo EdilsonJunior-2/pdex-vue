@@ -1,48 +1,32 @@
 <script setup lang="ts">
-import { getPokemonList } from "@/api/pokemon";
-import { ref, watch, onBeforeMount, capitalize } from "vue";
+import { ref, watch, onMounted, capitalize } from "vue";
 import Card from "@/components/Card.vue";
 import ListItem from "@/commons/classes/lists/listItem";
 import { sprite } from "@/commons/utils/URLs";
-import { getTypeList, getType } from "@/api/type";
-import { createPokemonListByType } from "@/commons/utils/lists";
-import { removingForbiddenTypes } from "@/commons/utils/type";
+import { getType } from "@/api/type";
+import { useStore } from "vuex";
 
-const pokemonList = ref<ListItem[]>([]);
+const { getters, commit, dispatch } = useStore();
 const types = ref<ListItem[]>([]);
-const offset = ref<number>(0);
 const limit = ref<number>(20);
-const total = ref<number>(0);
 const page = ref<number>(1);
 const nameFilter = ref<string>("");
-const numberFilter = ref<string>("");
+const idFilter = ref<string>("");
 const typeFilter = ref<number>();
 const pokemonListByType = ref<ListItem[]>([]);
-
-const catchEmAll = () => {
-  const promises = [getPokemonList(0, 10000), getTypeList()];
-  Promise.all(promises).then((res) => {
-    total.value = res[0].count;
-    pokemonList.value = res[0].results;
-    types.value.push(
-      ...res[1].results.filter((type) => !removingForbiddenTypes(type))
-    );
-  });
-};
-
-const filteredPokemonList = (): ListItem[] =>
-  createPokemonListByType(pokemonListByType.value, pokemonList.value).filter(
-    (poke) =>
-      poke.name.toLowerCase().includes(nameFilter.value.toLowerCase()) &&
-      poke.id.toString().includes(numberFilter.value)
-  );
+const loading = ref<boolean>(false);
 
 watch(page, (curr, _) => {
-  offset.value = limit.value * (curr - 1);
+  commit(`setOffset`, getters.getLimit * (curr - 1));
 });
 
-watch(numberFilter, (curr, _) => {
-  numberFilter.value = curr.replace(/\D+/g, "");
+watch(nameFilter, (curr, _) => {
+  commit("setNameFilter", curr);
+});
+
+watch(idFilter, (curr, _) => {
+  idFilter.value = curr.replace(/\D+/g, "");
+  commit("setIdFilter", curr);
 });
 
 watch(typeFilter, (curr, _) => {
@@ -51,8 +35,11 @@ watch(typeFilter, (curr, _) => {
     : (pokemonListByType.value = []);
 });
 
-onBeforeMount(() => {
-  catchEmAll();
+onMounted(() => {
+  Promise.all([
+    dispatch(`fetchPokemonList`, { offset: 0, limit: 10000 }),
+    dispatch(`fetchTypeList`),
+  ]).then(() => (loading.value = false));
 });
 </script>
 
@@ -60,7 +47,7 @@ onBeforeMount(() => {
   <main class="home-view">
     <div class="filters">
       <v-text-field v-model="nameFilter" label="Name filter" />
-      <v-text-field v-model="numberFilter" label="Index filter" />
+      <v-text-field v-model="idFilter" label="Index filter" />
       <v-select
         label="Limit"
         variant="outlined"
@@ -82,6 +69,7 @@ onBeforeMount(() => {
       </v-autocomplete>
     </div>
     <v-sheet
+      v-if="!loading"
       class="d-flex flex-wrap justify-center overflow-scroll"
       height="80vh"
     >
@@ -89,7 +77,7 @@ onBeforeMount(() => {
         class="pa-2"
         width="auto"
         min-width="20rem"
-        v-for="pokemon in filteredPokemonList().slice(offset, limit + offset)"
+        v-for="pokemon in getters.getFilteredPokemonList"
       >
         <Card
           :actions="[
@@ -112,7 +100,7 @@ onBeforeMount(() => {
     </v-sheet>
     <v-pagination
       v-model="page"
-      :length="Math.ceil(filteredPokemonList().length / limit)"
+      :length="Math.ceil(getters.getPokemonList.length / getters.getLimit)"
     ></v-pagination>
   </main>
 </template>
