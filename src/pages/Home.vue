@@ -1,29 +1,39 @@
 <script setup lang="ts">
-import { pokemonList } from "@/api/pokemon";
+import { getPokemonList } from "@/api/pokemon";
 import { ref, watch, onBeforeMount, capitalize } from "vue";
 import Card from "@/components/Card.vue";
 import ListItem from "@/commons/classes/lists/listItem";
 import PokemonListItem from "@/commons/classes/lists/pokemonListItem";
 import { sprite } from "@/commons/utils/URLs";
+import { getTypeList, getType } from "@/api/type";
+import { createPokemonListByType } from "@/commons/utils/lists";
 
-const pokemons = ref<PokemonListItem[]>([]);
+const pokemonList = ref<PokemonListItem[]>([]);
+const types = ref<ListItem[]>([]);
 const offset = ref<number>(0);
 const limit = ref<number>(20);
 const total = ref<number>(0);
 const page = ref<number>(1);
 const nameFilter = ref<string>("");
 const numberFilter = ref<string>("");
+const typeFilter = ref<number>();
+const pokemonListByType = ref<ListItem[]>([]);
 
-const catchEmAll = () =>
-  pokemonList(0, 10000).then((res: any) => {
-    total.value = res.count;
-    pokemons.value = res.results.map(
-      (poke: ListItem) => new PokemonListItem(poke)
+const catchEmAll = () => {
+  const promises = [getPokemonList(0, 10000), getTypeList()];
+  Promise.all(promises).then((res) => {
+    total.value = res[0].count;
+    pokemonList.value = res[0].results.map((poke) => new PokemonListItem(poke));
+    types.value.push(
+      ...res[1].results
+        .filter((type) => type.name !== "unknown" && type.name !== "shadow")
+        .map((type) => new ListItem(type))
     );
   });
+};
 
 const filteredPokemonList = (): PokemonListItem[] =>
-  pokemons.value.filter(
+  createPokemonListByType(pokemonListByType.value, pokemonList.value).filter(
     (poke) =>
       poke.name.toLowerCase().includes(nameFilter.value.toLowerCase()) &&
       poke.number.toString().includes(numberFilter.value)
@@ -35,6 +45,12 @@ watch(page, (curr, _) => {
 
 watch(numberFilter, (curr, _) => {
   numberFilter.value = curr.replace(/\D+/g, "");
+});
+
+watch(typeFilter, (curr, _) => {
+  curr
+    ? getType(curr).then((res) => (pokemonListByType.value = res.pokemon))
+    : (pokemonListByType.value = []);
 });
 
 onBeforeMount(() => {
@@ -53,6 +69,19 @@ onBeforeMount(() => {
         v-model="limit"
         :items="[10, 20, 50]"
       />
+      <v-autocomplete
+        label="Types"
+        variant="outlined"
+        v-model="typeFilter"
+        clearable
+        :items="
+          types.map((type, index) => ({
+            title: type.name,
+            value: index + 1,
+          }))
+        "
+      >
+      </v-autocomplete>
     </div>
     <v-sheet
       class="d-flex flex-wrap justify-center overflow-scroll"
