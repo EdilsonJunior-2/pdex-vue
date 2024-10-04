@@ -21,6 +21,9 @@ const mutations = {
   setIdFilter(state: PokemonState, newIdFilter: string) {
     state.idFilter = newIdFilter;
   },
+  setLimit(state: PokemonState, newLimit: number) {
+    state.limit = newLimit >= state.total ? state.total : newLimit;
+  },
 };
 
 export default mutations;

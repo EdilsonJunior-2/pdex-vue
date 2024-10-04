@@ -20,7 +20,7 @@ const getters = {
           poke.name.toLowerCase().includes(state.nameFilter.toLowerCase()) &&
           poke.id.toString().includes(state.idFilter)
       )
-      .slice(state.offset, state.limit + state.offset);
+      .slice(0, state.limit);
   },
   getTotal(state: PokemonState) {
     return state.total;

@@ -8,17 +8,11 @@ import { useStore } from "vuex";
 
 const { getters, commit, dispatch } = useStore();
 const types = ref<ListItem[]>([]);
-const limit = ref<number>(20);
-const page = ref<number>(1);
 const nameFilter = ref<string>("");
 const idFilter = ref<string>("");
 const typeFilter = ref<number>();
 const pokemonListByType = ref<ListItem[]>([]);
 const loading = ref<boolean>(false);
-
-watch(page, (curr, _) => {
-  commit(`setOffset`, getters.getLimit * (curr - 1));
-});
 
 watch(nameFilter, (curr, _) => {
   commit("setNameFilter", curr);
@@ -35,6 +29,16 @@ watch(typeFilter, (curr, _) => {
     : (pokemonListByType.value = []);
 });
 
+const load = ({ done }: any) => {
+  setTimeout(() => {
+    if (getters.getLimit >= getters.getTotal) done("empty");
+    else {
+      commit("setLimit", getters.getLimit + 50);
+      done("ok");
+    }
+  }, 1000);
+};
+
 onMounted(() => {
   Promise.all([
     dispatch(`fetchPokemonList`, { offset: 0, limit: 10000 }),
@@ -48,12 +52,6 @@ onMounted(() => {
     <div class="filters">
       <v-text-field v-model="nameFilter" label="Name filter" />
       <v-text-field v-model="idFilter" label="Index filter" />
-      <v-select
-        label="Limit"
-        variant="outlined"
-        v-model="limit"
-        :items="[10, 20, 50]"
-      />
       <v-autocomplete
         label="Types"
         variant="outlined"
@@ -68,40 +66,34 @@ onMounted(() => {
       >
       </v-autocomplete>
     </div>
-    <v-sheet
-      v-if="!loading"
-      class="d-flex flex-wrap justify-center overflow-scroll"
-      height="80vh"
-    >
-      <v-sheet
-        class="pa-2"
-        width="auto"
-        min-width="20rem"
-        v-for="pokemon in getters.getFilteredPokemonList"
-      >
-        <Card
-          :actions="[
-            {
-              text: 'details',
-              function: () => false,
-            },
-          ]"
+    <v-infinite-scroll class="fade-in" height="80vh" @load="load">
+      <v-sheet class="d-flex flex-wrap justify-center pa-2">
+        <template
+          v-for="pokemon in getters.getFilteredPokemonList"
+          :key="pokemon.id"
         >
-          <template v-slot:title>
-            {{ capitalize(pokemon.name) }} (#{{ pokemon.id }})
-          </template>
-          <template v-slot:content>
-            <v-sheet class="d-flex align-center justify-center">
-              <img :src="sprite(pokemon.id)" :alt="pokemon.name" />
-            </v-sheet>
-          </template>
-        </Card>
+          <v-sheet class="pa-2 flex-grow-1 flex-shrink-0" width="15rem">
+            <Card
+              :actions="[
+                {
+                  text: 'details',
+                  function: () => false,
+                },
+              ]"
+            >
+              <template v-slot:title>
+                {{ capitalize(pokemon.name) }} (#{{ pokemon.id }})
+              </template>
+              <template v-slot:content>
+                <v-sheet class="d-flex align-center justify-center">
+                  <img :src="sprite(pokemon.id)" :alt="pokemon.name" />
+                </v-sheet>
+              </template>
+            </Card>
+          </v-sheet>
+        </template>
       </v-sheet>
-    </v-sheet>
-    <v-pagination
-      v-model="page"
-      :length="Math.ceil(getters.getPokemonList.length / getters.getLimit)"
-    ></v-pagination>
+    </v-infinite-scroll>
   </main>
 </template>
 
@@ -112,6 +104,22 @@ onMounted(() => {
 
   .filters {
     display: flex;
+  }
+}
+.fade-in {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 400ms;
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 </style>

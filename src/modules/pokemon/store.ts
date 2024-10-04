@@ -7,9 +7,9 @@ const pokemonModule = {
   state: () =>
     <PokemonState>{
       pokemonList: [],
-      total: 0,
+      total: 51,
       offset: 0,
-      limit: 20,
+      limit: 50,
       nameFilter: "",
       idFilter: "",
     },
