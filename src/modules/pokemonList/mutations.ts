@@ -9,6 +9,12 @@ const mutations = {
     state.pokemonList = props.results;
     state.count = props.count;
   },
+  setLimit(state: PokemonState, newLimit: number) {
+    state.limit = newLimit;
+  },
+  setTotal(state: PokemonState, newTotal: number) {
+    state.total = newTotal;
+  },
 };
 
 export default mutations;
