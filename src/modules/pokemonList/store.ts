@@ -8,9 +8,9 @@ const pokemonModule = {
   state: () =>
     <PokemonState>{
       pokemonList: [],
-      count: 0,
       limit: 50,
       total: 0,
+      offset: 20,
     },
   getters,
   actions,
@@ -21,7 +21,7 @@ export default pokemonModule;
 
 export interface PokemonState {
   pokemonList: ListItem[];
-  count: number;
   limit: number;
   total: number;
+  offset: number;
 }
