@@ -1,10 +1,13 @@
+import { ListItemInterface } from "@/commons/interfaces/lists/list";
+import { getIdByUrl } from "@/commons/utils/URLs";
+
 class ListItem {
   public name: string;
-  public url: string;
+  public id: string;
 
-  constructor(props: ListItem) {
+  constructor(props: ListItemInterface) {
     this.name = props.name;
-    this.url = props.url;
+    this.id = getIdByUrl(props.url);
   }
 }
 
