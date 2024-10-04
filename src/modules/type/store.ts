@@ -2,20 +2,22 @@ import ListItem from "@/commons/classes/lists/listItem";
 import getters from "./getters";
 import actions from "./actions";
 import mutations from "./mutations";
+import { Type } from "@/commons/classes/type";
 
-const typeListModule = {
-  namespaced: true,
+const typeModule = {
   state: () =>
-    <TypeListState>{
+    <TypeState>{
       typeList: [],
+      type: null,
     },
   getters,
   actions,
   mutations,
 };
 
-export default typeListModule;
+export default typeModule;
 
-export interface TypeListState {
+export interface TypeState {
   typeList: ListItem[];
+  type: Type | null;
 }
