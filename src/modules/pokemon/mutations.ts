@@ -9,14 +9,17 @@ const mutations = {
     state.pokemonList = props.results;
     state.total = props.count;
   },
-  setLimit(state: PokemonState, newLimit: number) {
-    state.limit = newLimit;
-  },
   setTotal(state: PokemonState, newTotal: number) {
     state.total = newTotal;
   },
   setOffset(state: PokemonState, newOffset: number) {
     state.offset = newOffset;
+  },
+  setNameFilter(state: PokemonState, newNameFilter: string) {
+    state.nameFilter = newNameFilter;
+  },
+  setIdFilter(state: PokemonState, newIdFilter: string) {
+    state.idFilter = newIdFilter;
   },
 };
 

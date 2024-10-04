@@ -4,13 +4,14 @@ import mutations from "./mutations";
 import getters from "./getters";
 
 const pokemonModule = {
-  namespaced: true,
   state: () =>
     <PokemonState>{
       pokemonList: [],
-      limit: 50,
       total: 0,
-      offset: 20,
+      offset: 0,
+      limit: 20,
+      nameFilter: "",
+      idFilter: "",
     },
   getters,
   actions,
@@ -21,7 +22,9 @@ export default pokemonModule;
 
 export interface PokemonState {
   pokemonList: ListItem[];
-  limit: number;
   total: number;
   offset: number;
+  limit: number;
+  nameFilter: string;
+  idFilter: string;
 }
