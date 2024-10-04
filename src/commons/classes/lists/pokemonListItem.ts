@@ -1,12 +1,12 @@
 import { ListItemInterface } from "@/commons/interfaces/lists/list";
+import { getIdByUrl } from "@/commons/utils/URLs";
 
 class PokemonListItem {
   public number: number | string;
   public name: string;
   public url: string;
   constructor(props: ListItemInterface) {
-    const urlArray = props.url.split("/");
-    this.number = urlArray[urlArray.length - 2];
+    this.number = getIdByUrl(props.url);
     this.name = props.name;
     this.url = props.url;
   }
