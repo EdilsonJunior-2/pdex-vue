@@ -3,12 +3,12 @@ import { getPokemonList } from "@/api/pokemon";
 import { ref, watch, onBeforeMount, capitalize } from "vue";
 import Card from "@/components/Card.vue";
 import ListItem from "@/commons/classes/lists/listItem";
-import PokemonListItem from "@/commons/classes/lists/pokemonListItem";
 import { sprite } from "@/commons/utils/URLs";
 import { getTypeList, getType } from "@/api/type";
 import { createPokemonListByType } from "@/commons/utils/lists";
+import { removingForbiddenTypes } from "@/commons/utils/type";
 
-const pokemonList = ref<PokemonListItem[]>([]);
+const pokemonList = ref<ListItem[]>([]);
 const types = ref<ListItem[]>([]);
 const offset = ref<number>(0);
 const limit = ref<number>(20);
@@ -23,20 +23,18 @@ const catchEmAll = () => {
   const promises = [getPokemonList(0, 10000), getTypeList()];
   Promise.all(promises).then((res) => {
     total.value = res[0].count;
-    pokemonList.value = res[0].results.map((poke) => new PokemonListItem(poke));
+    pokemonList.value = res[0].results;
     types.value.push(
-      ...res[1].results
-        .filter((type) => type.name !== "unknown" && type.name !== "shadow")
-        .map((type) => new ListItem(type))
+      ...res[1].results.filter((type) => !removingForbiddenTypes(type))
     );
   });
 };
 
-const filteredPokemonList = (): PokemonListItem[] =>
+const filteredPokemonList = (): ListItem[] =>
   createPokemonListByType(pokemonListByType.value, pokemonList.value).filter(
     (poke) =>
       poke.name.toLowerCase().includes(nameFilter.value.toLowerCase()) &&
-      poke.number.toString().includes(numberFilter.value)
+      poke.id.toString().includes(numberFilter.value)
   );
 
 watch(page, (curr, _) => {
@@ -102,11 +100,11 @@ onBeforeMount(() => {
           ]"
         >
           <template v-slot:title>
-            {{ capitalize(pokemon.name) }} (#{{ pokemon.number }})
+            {{ capitalize(pokemon.name) }} (#{{ pokemon.id }})
           </template>
           <template v-slot:content>
             <v-sheet class="d-flex align-center justify-center">
-              <img :src="sprite(pokemon.number)" :alt="pokemon.name" />
+              <img :src="sprite(pokemon.id)" :alt="pokemon.name" />
             </v-sheet>
           </template>
         </Card>

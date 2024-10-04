@@ -1,19 +1,22 @@
 import { ListItemInterface } from "@/commons/interfaces/lists/list";
 import { PokemonInterface } from "@/commons/interfaces/pokemon";
 import api from ".";
+import ListItem from "@/commons/classes/lists/listItem";
 
-const pokemonData = (name: string) =>
+export const pokemonData = (name: string) =>
   api.get(`/pokemon/${name}`).then((pokemon) => pokemon.data);
 
-const pokemonList = (offset: number, limit: number) =>
+export const getPokemonList = (offset: number, limit: number) =>
   api
     .get(`/pokemon-species/?offset=${offset}&limit=${limit}`)
     .then(
-      (pokemon: { data: { results: ListItemInterface[]; count: number } }) =>
-        pokemon.data
+      (pokemon: { data: { results: ListItemInterface[]; count: number } }) => ({
+        count: pokemon.data.count,
+        results: pokemon.data.results.map((p) => new ListItem(p)),
+      })
     );
 
-const randomPokemon = () =>
+export const randomPokemon = () =>
   api
     .get(`pokemon-species`)
     .then((res: { data: { count: number } }) =>
@@ -23,5 +26,3 @@ const randomPokemon = () =>
           console.log(randomPokemon.data)
         )
     );
-
-export { pokemonData, pokemonList, randomPokemon };
