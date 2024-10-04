@@ -11,8 +11,6 @@ const pokemonModule = {
       count: 0,
       limit: 50,
       total: 0,
-      nameFilter: "",
-      idFilter: "",
     },
   getters,
   actions,
@@ -26,6 +24,4 @@ export interface PokemonState {
   count: number;
   limit: number;
   total: number;
-  nameFilter: string;
-  idFilter: string;
 }
