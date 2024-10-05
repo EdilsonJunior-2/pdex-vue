@@ -8,11 +8,11 @@ const getters = {
   getFilteredPokemonList(state: PokemonState, getters: any): ListItem[] {
     const type = getters.getType;
     const pokemonByTypeList = type
-      ? state.pokemonList.filter((pokemon: ListItem) => {
+      ? state.pokemonList.filter((pokemon: ListItem) =>
           type.pokemon.find(
-            (pokemonByType: ListItem) => pokemon.id === pokemonByType.id
-          );
-        })
+            (pokemonByType: ListItem) => pokemon.id == pokemonByType.id
+          )
+        )
       : state.pokemonList;
     return pokemonByTypeList
       .filter(
