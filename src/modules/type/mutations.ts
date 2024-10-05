@@ -1,12 +1,13 @@
 import ListItem from "@/commons/classes/lists/listItem";
-import { TypeListState } from "./store";
+import { TypeState } from "./store";
+import { Type } from "@/commons/classes/type";
 
 const mutations = {
-  setTypeList(
-    state: TypeListState,
-    props: { results: ListItem[]; count: number }
-  ) {
+  setTypeList(state: TypeState, props: { results: ListItem[]; count: number }) {
     state.typeList = props.results;
+  },
+  setType(state: TypeState, props: Type | null) {
+    state.type = props;
   },
 };
 
