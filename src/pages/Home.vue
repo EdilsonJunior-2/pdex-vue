@@ -3,15 +3,12 @@ import { ref, watch, onMounted, capitalize } from "vue";
 import Card from "@/components/Card.vue";
 import ListItem from "@/commons/classes/lists/listItem";
 import { sprite } from "@/commons/utils/URLs";
-import { getType } from "@/api/type";
 import { useStore } from "vuex";
 
 const { getters, commit, dispatch } = useStore();
-const types = ref<ListItem[]>([]);
 const nameFilter = ref<string>("");
 const idFilter = ref<string>("");
 const typeFilter = ref<number>();
-const pokemonListByType = ref<ListItem[]>([]);
 const loading = ref<boolean>(false);
 
 watch(nameFilter, (curr, _) => {
@@ -24,9 +21,11 @@ watch(idFilter, (curr, _) => {
 });
 
 watch(typeFilter, (curr, _) => {
-  curr
-    ? getType(curr).then((res) => (pokemonListByType.value = res.pokemon))
-    : (pokemonListByType.value = []);
+  loading.value = true;
+  setTimeout(() => {
+    dispatch("fetchType", curr);
+    loading.value = false;
+  }, 1000);
 });
 
 const load = ({ done }: any) => {
@@ -58,7 +57,7 @@ onMounted(() => {
         v-model="typeFilter"
         clearable
         :items="
-          types.map((type, index) => ({
+          getters.getTypeList.map((type: ListItem, index: number) => ({
             title: type.name,
             value: index + 1,
           }))
@@ -66,7 +65,12 @@ onMounted(() => {
       >
       </v-autocomplete>
     </div>
-    <v-infinite-scroll class="fade-in" height="80vh" @load="load">
+    <v-infinite-scroll
+      v-if="!loading"
+      class="fade-in"
+      height="80vh"
+      @load="load"
+    >
       <v-sheet class="d-flex flex-wrap justify-center pa-2">
         <template
           v-for="pokemon in getters.getFilteredPokemonList"
