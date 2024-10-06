@@ -13,7 +13,7 @@ const actions = ref(props.actions);
 </script>
 
 <template>
-  <v-card>
+  <v-card width="100%">
     <v-card-title>
       <slot name="title"></slot>
     </v-card-title>
