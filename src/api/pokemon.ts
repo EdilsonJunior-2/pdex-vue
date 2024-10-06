@@ -3,10 +3,19 @@ import { PokemonInterface } from "@/commons/interfaces/pokemon";
 import api from ".";
 import ListItem from "@/commons/classes/lists/listItem";
 
-export const pokemonData = (name: string) =>
-  api.get(`/pokemon/${name}`).then((pokemon) => pokemon.data);
+export const pokemonData = (id: number) =>
+  Promise.all([
+    api.get(`/pokemon/${id}`),
+    api.get(`/pokemon-species/${id}`),
+  ]).then((res) => ({
+    pokemon: res[0].data,
+    pokemon_species: res[1].data,
+  }));
 
-export const getPokemonList = (offset: number, limit: number) =>
+export const getPokemonList = (
+  offset: string | number,
+  limit: string | number
+) =>
   api
     .get(`/pokemon-species/?offset=${offset}&limit=${limit}`)
     .then(
