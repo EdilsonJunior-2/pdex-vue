@@ -14,12 +14,16 @@ const loading = ref<boolean>(false);
 const open = ref<boolean>(false);
 
 watch(nameFilter, (curr, _) => {
+  loading.value = true;
   commit("setNameFilter", curr);
+  setTimeout(() => (loading.value = false), 1000);
 });
 
 watch(idFilter, (curr, _) => {
+  loading.value = true;
   idFilter.value = curr.replace(/\D+/g, "");
-  commit("setIdFilter", curr);
+  commit("setIdFilter", idFilter.value);
+  setTimeout(() => (loading.value = false), 1000);
 });
 
 watch(typeFilter, (curr, _) => {
@@ -81,12 +85,14 @@ onMounted(() => {
       >
       </v-autocomplete>
     </div>
-    <v-infinite-scroll
-      v-if="!loading"
-      class="fade-in"
+    <v-sheet
+      v-if="loading"
       height="80vh"
-      @load="load"
+      class="d-flex align-center justify-center"
     >
+      <v-progress-circular indeterminate></v-progress-circular>
+    </v-sheet>
+    <v-infinite-scroll v-else class="fade-in" height="80vh" @load="load">
       <v-sheet class="d-flex flex-wrap justify-center pa-2">
         <template
           v-for="pokemon in getters.getFilteredPokemonList"
