@@ -22,6 +22,9 @@ const getters = {
       )
       .slice(0, state.limit);
   },
+  getSelectedPokemon(state: PokemonState) {
+    return state.selectedPokemon;
+  },
   getTotal(state: PokemonState) {
     return state.total;
   },

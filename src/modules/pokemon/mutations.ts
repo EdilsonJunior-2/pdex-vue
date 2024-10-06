@@ -1,3 +1,4 @@
+import Pokemon from "@/commons/classes/pokemon";
 import { PokemonState } from "./store";
 import ListItem from "@/commons/classes/lists/listItem";
 
@@ -8,6 +9,9 @@ const mutations = {
   ) {
     state.pokemonList = props.results;
     state.total = props.count;
+  },
+  setSelectedPokemon(state: PokemonState, selectedPokemon: Pokemon | null) {
+    state.selectedPokemon = selectedPokemon;
   },
   setTotal(state: PokemonState, newTotal: number) {
     state.total = newTotal;
