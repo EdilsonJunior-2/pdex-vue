@@ -1,4 +1,4 @@
 export interface CriesInterface {
-  latest?: string;
-  legacy?: string;
+  latest: string;
+  legacy: string | null;
 }
