@@ -1,4 +1,4 @@
-import { NameListItemInterface } from "@/commons/interfaces/lists/nameList";
+import { LanguageListItemInterface } from "@/commons/interfaces/lists/languageList";
 import { getIdByUrl } from "@/commons/utils/URLs";
 
 export class LanguageListItem {
@@ -6,9 +6,9 @@ export class LanguageListItem {
   isoCode: string;
   name: string;
 
-  constructor(props: NameListItemInterface) {
+  constructor(props: LanguageListItemInterface) {
     this.id = getIdByUrl(props.language.url);
     this.isoCode = props.language.name;
-    this.name = props.name;
+    this.name = props.genus;
   }
 }
