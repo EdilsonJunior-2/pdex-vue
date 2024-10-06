@@ -9,7 +9,7 @@ export interface PokemonInterface {
   abilities: AbilityListItemInterface[];
   cries: CriesInterface;
   base_experience: number;
-  forms: ListItemInterface;
+  forms: ListItemInterface[];
   height: number;
   id: number;
   location_area_encounters: string;
