@@ -4,12 +4,14 @@ import Card from "@/components/Card.vue";
 import ListItem from "@/commons/classes/lists/listItem";
 import { sprite } from "@/commons/utils/URLs";
 import { useStore } from "vuex";
+import Pokemon from "./pokemon/Pokemon.vue";
 
 const { getters, commit, dispatch } = useStore();
 const nameFilter = ref<string>("");
 const idFilter = ref<string>("");
 const typeFilter = ref<number>();
 const loading = ref<boolean>(false);
+const open = ref<boolean>(false);
 
 watch(nameFilter, (curr, _) => {
   commit("setNameFilter", curr);
@@ -27,6 +29,19 @@ watch(typeFilter, (curr, _) => {
     loading.value = false;
   }, 1000);
 });
+
+const openDrawer = (e: any, id: number) => {
+  e.preventDefault();
+  dispatch("fetchPokemon", { id: id }).then(() => (open.value = true));
+};
+
+const closeDrawer = (e: any) => {
+  e.preventDefault();
+  open.value = false;
+  setTimeout(() => {
+    dispatch("fetchPokemon");
+  }, 500);
+};
 
 const load = ({ done }: any) => {
   setTimeout(() => {
@@ -48,6 +63,7 @@ onMounted(() => {
 
 <template>
   <main class="home-view">
+    <Pokemon :open="open" :onClose="closeDrawer" />
     <div class="filters">
       <v-text-field v-model="nameFilter" label="Name filter" />
       <v-text-field v-model="idFilter" label="Index filter" />
@@ -81,7 +97,7 @@ onMounted(() => {
               :actions="[
                 {
                   text: 'details',
-                  function: () => false,
+                  function: (e) => openDrawer(e, pokemon.id),
                 },
               ]"
             >
