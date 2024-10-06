@@ -9,6 +9,6 @@ export class LanguageListItem {
   constructor(props: LanguageListItemInterface) {
     this.id = getIdByUrl(props.language.url);
     this.isoCode = props.language.name;
-    this.name = props.genus;
+    this.name = props.name;
   }
 }

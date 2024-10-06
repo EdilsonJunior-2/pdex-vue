@@ -1,6 +1,7 @@
 import { PokemonInterface } from "../interfaces/pokemon";
 import { PokemonSpeciesInterface } from "../interfaces/pokemonSpecies";
 import { AbilityListItem } from "./lists/abilityListItem";
+import { GeneraListItem } from "./lists/generaListItem";
 import { LanguageListItem } from "./lists/languageListItem";
 import ListItem from "./lists/listItem";
 import { NameListItem } from "./lists/nameListItem";
@@ -20,7 +21,7 @@ export default class Pokemon {
   pokedex_entry: string;
   base_exp: number;
   forms: ListItem[];
-  genera: LanguageListItem[];
+  genera: GeneraListItem[];
   baby: boolean;
   mythical: boolean;
   legendary: boolean;
@@ -46,7 +47,7 @@ export default class Pokemon {
     this.pokedex_entry = props.flavor_text_entries[0].flavor_text;
     this.base_exp = props.base_experience;
     this.forms = props.forms.map((form) => new ListItem(form));
-    this.genera = props.genera.map((genus) => new LanguageListItem(genus));
+    this.genera = props.genera.map((genus) => new GeneraListItem(genus));
     this.baby = props.is_baby;
     this.mythical = props.is_mythical;
     this.legendary = props.is_legendary;
@@ -58,5 +59,6 @@ export default class Pokemon {
     this.abilities = props.abilities.map(
       (ability) => new AbilityListItem(ability)
     );
+    console.log(this);
   }
 }

@@ -1,6 +1,6 @@
 import { ListItemInterface } from "./list";
 
 export interface LanguageListItemInterface {
-  genus: string;
+  name: string;
   language: ListItemInterface;
 }
