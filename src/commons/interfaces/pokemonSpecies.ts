@@ -24,9 +24,9 @@ export interface PokemonSpeciesInterface {
   has_gender_differences?: boolean;
   hatch_counter?: number;
   id: number;
-  is_baby?: boolean;
-  is_legendary?: boolean;
-  is_mythical?: boolean;
+  is_baby: boolean;
+  is_legendary: boolean;
+  is_mythical: boolean;
   name: string;
   names: NameListItemInterface[];
   order: number;
