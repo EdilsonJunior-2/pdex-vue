@@ -17,9 +17,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "types": [
-      "vuex/types"
-    ],
     "typeRoots": [
       "./node_modules/@types"
     ]
