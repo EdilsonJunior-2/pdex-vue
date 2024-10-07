@@ -1,4 +1,3 @@
-import { EvolutionChainInterface } from "./attributes/evolutionChain";
 import { ListItemInterface } from "./lists/list";
 import { FlavorTextEntryInterface } from "./attributes/flavorTextEntry";
 import { FormDescriptionListItemInterface } from "./lists/formDescriptionList";
@@ -8,10 +7,10 @@ import { PokedexNumberListItemInterface } from "./lists/pokedexNumberList";
 import { VarietyListItemInterface } from "./lists/varietyList";
 
 export interface PokemonSpeciesInterface {
-  base_hapiness: number;
+  base_happiness: number;
   capture_rate: number;
   egg_groups: ListItemInterface[];
-  evolution_chain: EvolutionChainInterface;
+  evolution_chain: { url: string };
   evolves_from_species: ListItemInterface;
   flavor_text_entries: FlavorTextEntryInterface[];
   form_descriptions: FormDescriptionListItemInterface[];

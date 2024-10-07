@@ -1,7 +1,9 @@
-import { getPokemonList, pokemonData } from "@/api/pokemon";
+import { getPokemonList, pokemonData, pokemonEvoChain } from "@/api/pokemon";
 import Pokemon from "@/commons/classes/pokemon";
+import { EvolutionChainInterface } from "@/commons/interfaces/attributes/evolutionChain";
 import { PokemonInterface } from "@/commons/interfaces/pokemon";
 import { PokemonSpeciesInterface } from "@/commons/interfaces/pokemonSpecies";
+import { getIdByUrl } from "@/commons/utils/URLs";
 const actions = {
   fetchPokemonList(
     { commit }: any,
@@ -18,9 +20,17 @@ const actions = {
             pokemon: PokemonInterface;
             pokemon_species: PokemonSpeciesInterface;
           }) =>
-            commit(
-              "setSelectedPokemon",
-              new Pokemon({ ...res.pokemon, ...res.pokemon_species })
+            pokemonEvoChain(
+              getIdByUrl(res.pokemon_species.evolution_chain.url)
+            ).then((evo_chain: EvolutionChainInterface) =>
+              commit(
+                "setSelectedPokemon",
+                new Pokemon({
+                  ...res.pokemon,
+                  ...res.pokemon_species,
+                  evo_chain: evo_chain,
+                })
+              )
             )
         )
       : commit("setSelectedPokemon");
