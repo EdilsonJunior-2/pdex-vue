@@ -19,6 +19,9 @@
     "noFallthroughCasesInSwitch": true,
     "types": [
       "vuex/types"
+    ],
+    "typeRoots": [
+      "./node_modules/@types"
     ]
   },
   "include": [
