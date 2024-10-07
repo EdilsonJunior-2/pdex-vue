@@ -8,7 +8,7 @@ import Pokemon from "./pokemon/Pokemon.vue";
 
 const { getters, commit, dispatch } = useStore();
 const nameFilter = ref<string>("");
-const idFilter = ref<string>("");
+const idFilter = ref<number>();
 const typeFilter = ref<number>();
 const loading = ref<boolean>(false);
 const open = ref<boolean>(false);
@@ -21,8 +21,7 @@ watch(nameFilter, (curr, _) => {
 
 watch(idFilter, (curr, _) => {
   loading.value = true;
-  idFilter.value = curr.replace(/\D+/g, "");
-  commit("setIdFilter", idFilter.value);
+  commit("setIdFilter", curr);
   setTimeout(() => (loading.value = false), 1000);
 });
 
@@ -69,10 +68,20 @@ onMounted(() => {
   <main class="home-view">
     <Pokemon :open="open" :onClose="closeDrawer" />
     <div class="filters">
-      <v-text-field v-model="nameFilter" label="Name filter" />
-      <v-text-field v-model="idFilter" label="Index filter" />
+      <v-text-field
+        variant="outlined"
+        v-model="nameFilter"
+        label="Name filter"
+      />
+      <v-number-input
+        variant="outlined"
+        v-model="idFilter"
+        :min="1"
+        :max="getters.getTotal"
+        label="Id filter"
+      />
       <v-autocomplete
-        label="Types"
+        label="Type filter"
         variant="outlined"
         v-model="typeFilter"
         clearable
