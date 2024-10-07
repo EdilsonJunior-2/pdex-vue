@@ -20,7 +20,7 @@ export default class Pokemon {
     speed: number;
   };
   types: ListItem[];
-  pokedex_entry: string;
+  pokedex_entry?: string;
   base_exp: number;
   forms: ListItem[];
   genera: GeneraListItem[];
@@ -50,7 +50,9 @@ export default class Pokemon {
       speed: props.stats[5].base_stat,
     };
     this.types = props.types.map((t) => new ListItem(t.type));
-    this.pokedex_entry = props.flavor_text_entries[0].flavor_text;
+    this.pokedex_entry = props.flavor_text_entries.find(
+      (entry) => entry.language.name == "en"
+    )?.flavor_text;
     this.base_exp = props.base_experience;
     this.forms = props.forms.map((form) => new ListItem(form));
     this.genera = props.genera.map((genus) => new GeneraListItem(genus));
