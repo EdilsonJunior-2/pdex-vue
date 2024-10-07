@@ -1,3 +1,9 @@
+import { EvolutionDetailsInterface } from "./evolutionDetails";
+import { ListItemInterface } from "../lists/list";
+
 export interface EvolutionChainInterface {
-  url: string;
+  evolution_details: EvolutionDetailsInterface[];
+  evolves_to: EvolutionChainInterface[];
+  is_baby: boolean;
+  species: ListItemInterface;
 }
