@@ -2,6 +2,7 @@
 import { capitalize, defineProps } from "vue";
 import { sprite, typeSprite } from "@/commons/utils/URLs";
 import { useStore } from "vuex";
+import EvolutionChainChart from "@/components/EvolutionChainChart.vue";
 
 const props = defineProps(["open", "onClose"]);
 const { getters, dispatch } = useStore();
@@ -19,7 +20,7 @@ const getNewPokemon = (id: number) => {
 </script>
 
 <template>
-  <v-navigation-drawer width="2000" v-model="props.open" permanent left>
+  <v-navigation-drawer width="20000" v-model="props.open" permanent left>
     <v-sheet v-if="getters.getSelectedPokemon" class="pa-2">
       <v-sheet class="d-flex justify-end">
         <v-btn variant="text" rounded @click="props.onClose">
@@ -79,36 +80,47 @@ const getNewPokemon = (id: number) => {
       </v-row>
       <v-sheet class="d-flex flex-column align-center">
         <img width="200px" :src="sprite(getters.getSelectedPokemon.id)" />
-        <p class="pokemon-id">#{{ getters.getSelectedPokemon.id }}</p>
         <h2>
+          <span class="pokemon-id">#{{ getters.getSelectedPokemon.id }}</span>
           {{ capitalize(getters.getSelectedPokemon.name) }}
         </h2>
+        <v-sheet class="d-flex justify-center ma-4">
+          <img
+            class="ma-1"
+            width="120px"
+            v-for="type in getters.getSelectedPokemon.types"
+            :src="typeSprite(type.id)"
+            :alt="type.name"
+          />
+        </v-sheet>
         <h3>Pokedex entry</h3>
         <p>
           {{ getters.getSelectedPokemon.pokedex_entry }}
         </p>
       </v-sheet>
-      <v-sheet class="d-flex justify-center ma-4">
-        <img
-          width="150px"
-          v-for="type in getters.getSelectedPokemon.types"
-          :src="typeSprite(type.id)"
-          :alt="type.name"
-        />
-      </v-sheet>
       <h3 class="abilities-title">Abilities</h3>
       <v-sheet class="abilities d-flex justify-space-around ma-2 flex-wrap">
         <p v-for="ability in getters.getSelectedPokemon.abilities">
           {{ ability.name }}
-          <v-tooltip v-if="ability.hidden" text="hidden ability" location="top">
+          <v-tooltip
+            open-on-click
+            v-if="ability.hidden"
+            text="hidden ability"
+            location="top"
+          >
             <template v-slot:activator="{ props }">
               <v-icon v-bind="props" icon="mdi-eye-off" />
             </template>
           </v-tooltip>
         </p>
       </v-sheet>
+      <h3 v-if="getters.getSelectedPokemon.evolution_chain.evolved_to">
+        Evolution chain
+      </h3>
+      <EvolutionChainChart />
+      <h3>Base stats</h3>
       <v-row
-        class="d-flex align-center"
+        class="d-flex align-center mt-2"
         v-for="stat in Object.keys(getters.getSelectedPokemon.stats)"
       >
         <v-col cols="2">
@@ -154,8 +166,6 @@ const getNewPokemon = (id: number) => {
   }
 }
 .pokemon-id {
-  font-size: 18px;
-  font-weight: bold;
   color: #999;
 }
 
