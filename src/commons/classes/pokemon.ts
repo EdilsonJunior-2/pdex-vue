@@ -33,7 +33,7 @@ export default class Pokemon {
   cry: string;
   names: LanguageListItem[];
   abilities: AbilityListItem[];
-  evolution_chain?: EvolutionChain;
+  evolution_chain: EvolutionChain;
 
   constructor(
     props: PokemonSpeciesInterface &

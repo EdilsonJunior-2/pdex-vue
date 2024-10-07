@@ -1,6 +1,6 @@
 import { EvolutionChainInterface } from "@/commons/interfaces/attributes/evolutionChain";
 import ListItem from "../lists/listItem";
-import { EvolutionDetails } from "./EvolutionDetails";
+import { EvolutionDetails } from "./evolutionDetails";
 
 export class EvolutionChain {
   evolution_details: EvolutionDetails | null;
